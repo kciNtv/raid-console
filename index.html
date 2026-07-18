@@ -114,7 +114,7 @@
         <div class="row">
           <div>
             <label>Repo owner (GitHub username)</label>
-            <input type="text" id="inOwner" class="idlike" value="superrcharge">
+            <input type="text" id="inOwner" class="idlike" value="kcintv">
           </div>
           <div>
             <label>Repo name</label>
@@ -267,7 +267,7 @@
 const $ = (id) => document.getElementById(id);
 const API = "https://api.github.com";
 const store = {
-  get owner() { return localStorage.getItem("rc_owner") || "superrcharge"; },
+  get owner() { return localStorage.getItem("rc_owner") || "kcintv"; },
   set owner(v) { localStorage.setItem("rc_owner", v); },
   get repo() { return localStorage.getItem("rc_repo") || "RaidHelperReminder"; },
   set repo(v) { localStorage.setItem("rc_repo", v); },
