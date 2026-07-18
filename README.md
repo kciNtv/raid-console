@@ -1,7 +1,7 @@
 # Raid Reminder Console
 
 A single-page settings GUI for the (private) **RaidHelperReminder** bot repo.
-Live at: **https://superrcharge.github.io/raid-console/**
+Live at: **https://kcintv.github.io/raid-console/**
 
 ## What it is
 
