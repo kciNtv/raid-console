@@ -393,13 +393,20 @@ function ruleCard(rule) {
 function annCard(a) {
   const div = document.createElement("div");
   div.className = "card";
+  // Keep the original entry so collectForm can carry over any setting this
+  // console does not have a field for yet, instead of silently dropping it.
+  div._orig = a || {};
   div.innerHTML = `
     <div class="row">
       <div><label>Minutes before raid start (posts on the first evening check inside this window)</label>
-        <input type="text" class="aMin idlike" value="${a.minutes_before ?? 75}"></div>
-      <div><label>Role IDs to ping (empty = no ping)</label>
+        <input type="text" class="aMin idlike" value="${a.minutes_before ?? 60}"></div>
+      <div><label>Role IDs to ping (used only when the box below is unticked)</label>
         <input type="text" class="aRoles idlike" value="${(a.mention_role_ids || []).join(", ")}"></div>
     </div>
+    <label style="display:flex;align-items:center;gap:8px;font-weight:normal">
+      <input type="checkbox" class="aAud" ${a.mention_audience ? "checked" : ""}>
+      Ping the raid's own team (a Red raid pings Raid Team Red, a Blue raid pings Raid Team Blue)
+    </label>
     <label>Message text</label><textarea class="aText">${a.text || ""}</textarea>
     <div class="row">
       <div><label>Post into this channel instead of the event's own (empty = event's channel)</label>
@@ -472,14 +479,19 @@ function collectForm() {
   const anns = [];
   $("anns").querySelectorAll(".card").forEach(card => {
     const a = {
-      minutes_before: parseInt(card.querySelector(".aMin").value, 10) || 75,
+      // Spread the original first so settings without a field here survive a
+      // save. Without this the console quietly deleted mention_audience and
+      // the T-60 post reverted to pinging every raider.
+      ...(card._orig || {}),
+      minutes_before: parseInt(card.querySelector(".aMin").value, 10) || 60,
       mention_role_ids: idsFromText(card.querySelector(".aRoles").value),
+      mention_audience: card.querySelector(".aAud").checked,
       text: card.querySelector(".aText").value,
     };
     const chan = card.querySelector(".aChan").value.trim();
     const match = card.querySelector(".aMatch").value.trim();
-    if (chan) a.channel_id = chan;
-    if (match) a.match = { channel_id: match };
+    if (chan) a.channel_id = chan; else delete a.channel_id;
+    if (match) a.match = { channel_id: match }; else delete a.match;
     anns.push(a);
   });
   const windows = idsFromText($("fWindows").value).map(Number);
